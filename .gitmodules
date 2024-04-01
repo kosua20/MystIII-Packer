@@ -1,0 +1,3 @@
+[submodule "scummvm-myst3"]
+	path = scummvm-myst3
+	url = https://github.com/kosua20/scummvm-myst3
