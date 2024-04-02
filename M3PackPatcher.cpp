@@ -243,7 +243,6 @@ void readDirectory(FILE* file, Directory& directory, bool expectNames) {
 	directory.encoded = decryptHeader(file, buffer);
 	directory.size = buffer.read<uint32_t>();
 	assert(directory.size * sizeof(uint32_t) == buffer.data.size());
-
 	while(buffer.contains<uint32_t>()) {
 		directory.entries.emplace_back();
 		readEntry(buffer, directory.entries.back(), expectNames);
@@ -331,7 +330,7 @@ void writeJPEGToEntryFunc(void *context, void *data, int size){
 int main(int argc, char** argv){
 
 	if(argc < 4){
-		std::cout << "executable path/to/input_dir path/to/output_dir subpath/to/nodes.m3a [-names]" << std::endl;
+		std::cout << "executable path/to/input_dir path/to/upscaled_dir path/to/output_dir input_dir/subpath/to/nodes.m3a [-names]" << std::endl;
 		return 0;
 	}
 
@@ -364,8 +363,10 @@ int main(int argc, char** argv){
 		FILE* inFile = fopen(inFilePath.c_str(), "rb");
 
 		if(!inFile){
+			std::cout << "Could not open file at path " << inFilePath << std::endl;
 			return -1;
 		}
+		std::cout << "Reading " << inFilePath << std::endl;
 
 		readDirectory(inFile, directory, expectNames);
 
@@ -374,7 +375,7 @@ int main(int argc, char** argv){
 #ifdef LOG_ENTRIES
 	logDirectory(directory);
 #endif
-	
+		
 		// Load corresponding data.
 		for(Entry& entry : directory.entries){
 			for(SubEntry& subEntry : entry.subEntries){
